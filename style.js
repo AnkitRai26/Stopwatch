@@ -1,79 +1,87 @@
-let start = document.getElementById('start');
-let stop = document.getElementById('stop');
-let reset = document.getElementById('reset');
-let hour = 0;
-let minute = 0;
-let second = 0;
-let count = 0;
-let counter = true;
-let startWatch=true;
+let btn1 = document.getElementById("start_btn");
+let btn2 = document.getElementById("stop_btn");
+let btn3 = document.getElementById("reset_btn");
+let timer_text = document.getElementById("timer_text");
 
+btn1.addEventListener("click" , Start);
+btn2.addEventListener("click" , Stop);
+btn3.addEventListener("click" , Reset);
 
+let check = false;
+let check_for_start = false;
+let milliSeconds = 0;
+let seconds = 0;
+let minutes = 0;
+let hours = 0;
+let event_value;
+let ms, s , m , h;
 
-start.addEventListener('click', () => {
-    counter = true;
-    if(startWatch){
-        stopWatch();
-        startWatch=false;
-    }
-});
+function Start() {
+    if(check_for_start === true) return;
 
-stop.addEventListener('click', () => {
-    counter = false;
-    startWatch = true;
-});
-
-reset.addEventListener('click', () =>{
-    startWatch=true;
-    counter = false;
-    hour = 0;
-    minute = 0;
-    second = 0;
-    count = 0;
-    document.getElementById('hr').innerHTML = '00';
-    document.getElementById('min').innerHTML = '00';
-    document.getElementById('sec').innerHTML = '00';
-});
-
-function stopWatch() {
-    if(counter){
-        second++;
+    check = true;
+    check_for_start = true;
+    event_value = setInterval(function(){
+        milliSeconds += 5;
+        if(milliSeconds === 1000) {
+            milliSeconds = 0;
+            seconds++;
         }
-        if(second == 60){
-            minute++;
-            second = 0;
+        if(seconds === 60) {
+            seconds = 0;
+            minutes++;
         }
-        if(minute == 60){
-            hour++;
-            minute = 0;
-            second = 0;
+        if(minutes === 60) {
+            minutes = 0;
+            hours++;
         }
-        if(hour == 24){
-            reset++;
-            hour = 0;
+        if(hours === 24) {
+            Reset();
         }
-        let hrString = hour;
-        let minString = minute;
-        let secString = second;
-
-        if (hour < 10) {
-            hrString = '0' + hrString;
+        if(milliSeconds < 10) {
+            ms = "00" + milliSeconds;
         }
-        if (minute < 10) {
-            minString = '0' + minString;
+        else if(milliSeconds < 100) {
+            ms = "0" + milliSeconds;
         }
-        if (second < 10) {
-            secString = '0' + secString;
+        else {
+            ms = milliSeconds;
         }
-        document.getElementById('hr').innerHTML = hrString;
-        document.getElementById('min').innerHTML = minString;
-        document.getElementById('sec').innerHTML = secString;
-
-        setTimeout(stopWatch, 1000);
-
-
-    }
-
-
-
+        if(seconds < 10) {
+            s = "0" + seconds;
+        }
+        else {
+            s = seconds;
+        }
+        if(minutes < 10) {
+            m = "0" + minutes;
+        }
+        else {
+            m = minutes;
+        }
+        if(hours < 10) {
+            h = "0" + hours;
+        }
+        else {
+            h = hours;
+        }
+        timer_text.innerHTML = h + " : " + m + " : " + s + " : " + ms;
+    },5)
+}
+function Stop() {
+    if(check === false) return;
+    clearInterval(event_value);
+    start_btn.innerText = "RESUME";
+    check_for_start = false;
+}
+function Reset() {
+    check = false;
+    check_for_start = false;
+    milliSeconds = 0;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    timer_text.innerHTML = "00 : 00 : 00 : 000";
+    clearInterval(event_value);
+    start_btn.innerText = "START";   
 }
